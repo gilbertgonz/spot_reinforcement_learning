@@ -192,19 +192,7 @@ class SpotEnv(gym.Env):
 
     def check_done(self):
         # Check if episode is done
-        if self.tipped_over:
-            return True
-
-        if self.collision:
-            return True
-
-        if self.time_over:
-            return True
-
-        if self.distance_achieved:
-            return True
-        
-        if self.too_far:
+        if self.tipped_over or self.collision or self.time_over or self.distance_achieved: # or self.too_far
             return True
 
         return False
