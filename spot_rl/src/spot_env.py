@@ -88,7 +88,7 @@ class SpotEnv(gym.Env):
         self.reward = 0.0
 
         self.distance_from_goal = 0.0
-        self.goal_position = random.choice(self.waypoints) # 3.524, 2.096
+        self.goal_position = 3.524, 2.096
         print("goal pos: ", str(self.goal_position))
         self.ranges = []
         self.action = None
@@ -168,20 +168,30 @@ class SpotEnv(gym.Env):
         if self.distance_from_goal < 1.5:
             print("arrived")
             arrival_reward = 100
-            self.distance_achieved = True
+            waypoints = [wp for wp in self.waypoints if wp != self.goal_position]
+            self.goal_position = random.choice(waypoints)
+            print(self.goal_position)
+            # self.distance_achieved = True
         elif self.distance_from_goal > 6.5:
             print("too far")
-            arrival_reward = -30
+            arrival_reward = -5 # change to -30 if resetting the env
             self.too_far = True
         elif self.tipped_over:
             print("tipped")
             bad_reward = -30
-        elif self.collision:
-            print("collided")
-            bad_reward = -30
+        
+        # new to test
+        elif self.collision and self.distance_from_goal > 3.0:  
+            print("collided far")
+            bad_reward = -40
+        elif self.collision and self.distance_from_goal < 3.0:
+            print("collided close")
+            bad_reward = -10
+
+
         elif self.time_over and self.distance_from_goal > 3.0:
             print("time far")
-            bad_reward = -30
+            bad_reward = -40
         elif self.time_over and self.distance_from_goal < 3.0:
             print("time close")
             bad_reward = 10
@@ -192,7 +202,7 @@ class SpotEnv(gym.Env):
 
     def check_done(self):
         # Check if episode is done
-        if self.tipped_over or self.collision or self.time_over or self.distance_achieved: # or self.too_far
+        if self.tipped_over or self.collision or self.time_over or self.distance_achieved: #or self.too_far:
             return True
 
         return False
