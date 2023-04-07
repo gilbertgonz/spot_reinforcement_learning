@@ -17,7 +17,7 @@ class SpotEnv(gym.Env):
         rospy.init_node('my_env', anonymous=True)
 
         # Define observation space and action space
-        self.observation_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(520,), dtype=np.float32) # dtype=np.float32
+        self.observation_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(520,)) # dtype=np.float32
         self.action_space = gym.spaces.Discrete(3)
 
         # Create ROS publishers and subscribers
@@ -138,9 +138,11 @@ class SpotEnv(gym.Env):
 
         # Adding data to observation vector
         self.observation[0:len(self.ranges[int(len(self.ranges)/4):int(len(self.ranges)*3/4)])] = self.ranges[int(len(self.ranges)/4):int(len(self.ranges)*3/4)]
-        self.observation[-3] = imu_data.orientation.x
-        self.observation[-2] = (self.robot_position[0], self.robot_position[1])
-        self.observation[-1] = (self.waypoint_position[0], self.waypoint_position[1])       
+        self.observation[-5] = imu_data.orientation.x
+        self.observation[-4] = self.robot_position[0]
+        self.observation[-3] = self.robot_position[1]
+        self.observation[-2] = self.waypoint_position[0]
+        self.observation[-1] = self.waypoint_position[1]        
 
         for i, value in enumerate(self.ranges[int(len(self.ranges)//4):int(len(self.ranges)*3//4)]):
             if value < 0.45:
@@ -164,7 +166,7 @@ class SpotEnv(gym.Env):
         elif self.tipped_over:
             bad_reward = -40
         elif self.collision:  
-            bad_reward = -40
+            bad_reward = -60
         elif self.time_over and self.distance_from_goal > 3.0:
             print("time far")
             bad_reward = -30
