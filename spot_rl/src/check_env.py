@@ -1,7 +1,7 @@
 import gym
 import logging
 import random
-from spot_env import SpotEnv
+from spot_env_waypoints import SpotEnv
 import time
 
 gym.logger.set_level(logging.CRITICAL)

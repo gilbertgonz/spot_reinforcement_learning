@@ -1,6 +1,6 @@
 import gym
 from stable_baselines3 import PPO
-from spot_env import SpotEnv
+from spot_env_one_waypoint import SpotEnv
 from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.callbacks import CheckpointCallback
 
@@ -11,10 +11,10 @@ checkpoint_callback = CheckpointCallback(save_freq=10000, save_path="./tb_log/",
 env = DummyVecEnv([lambda: SpotEnv()])
 
 # Load saved model
-model = PPO.load("./tb_log/ppo_model_final.zip", env=env, tensorboard_log="./tb_log/")
+model = PPO.load("./tb_log/ppo_upgraded2.zip", env=env, tensorboard_log="./tb_log/")
 
 # Continue training for additional 10000 timesteps
-model.learn(total_timesteps=100000, callback=checkpoint_callback)
+model.learn(total_timesteps=500000, callback=checkpoint_callback)
 
 print("######################## Done Training ########################")
 

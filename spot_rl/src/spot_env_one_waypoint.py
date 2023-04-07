@@ -34,8 +34,7 @@ class SpotEnv(gym.Env):
         self.reward = 0.0
         self.action = None
         self.ranges = []
-        self.waypoints = [(3.0113, -2.8049), (3.524, 2.096), (-1.367888, -3.131377)]
-        self.goal_position = 3.524, 2.096
+        self.waypoint_position = 3.0113, -2.8049
         self.distance_from_goal = 0.0
 
         self.too_far = False
@@ -57,7 +56,7 @@ class SpotEnv(gym.Env):
 
     def imu_callback(self, data):
         # Check if robot is tipped over
-        if abs(data.orientation.x) > 0.6 or abs(data.orientation.y) > 0.6:
+        if abs(data.orientation.x) > 0.6:
             self.tipped_over = True
 
     def state_callback(self, data):
@@ -88,8 +87,6 @@ class SpotEnv(gym.Env):
         self.reward = 0.0
 
         self.distance_from_goal = 0.0
-        self.goal_position = 3.524, 2.096
-        print("goal pos: ", str(self.goal_position))
         self.ranges = []
         self.action = None
         self.done = False
@@ -97,6 +94,7 @@ class SpotEnv(gym.Env):
         self.tipped_over = False
         self.distance_achieved = False
         self.time_over = False
+        self.too_far = False
 
         return self.observation
 
@@ -113,14 +111,6 @@ class SpotEnv(gym.Env):
         elif action == 2:  # Left
             vel_cmd.linear.x = 0.15
             vel_cmd.angular.z = 0.4
-        # elif action == 3:  # Stop
-        #     vel_cmd.linear.x = 0.0
-        #     vel_cmd.angular.z = 0.0
-            # self.reward -= 1.0
-        # elif action == 4:  # Reverse
-        #     vel_cmd.linear.x = -0.3
-        #     vel_cmd.angular.z = 0.0
-            # self.reward -= 2.0
 
         # Publish velocity command
         self.vel_pub.publish(vel_cmd)
@@ -131,7 +121,7 @@ class SpotEnv(gym.Env):
             self.time_over = True
     
         # Wait for observation to be updated
-        rospy.sleep(0.5)
+        rospy.sleep(0.1)
 
         self.total_reward += self.reward
         
@@ -149,8 +139,8 @@ class SpotEnv(gym.Env):
         # Adding data to observation vector
         self.observation[0:len(self.ranges[int(len(self.ranges)/4):int(len(self.ranges)*3/4)])] = self.ranges[int(len(self.ranges)/4):int(len(self.ranges)*3/4)]
         self.observation[-3] = imu_data.orientation.x
-        self.observation[-2] = imu_data.orientation.y
-        self.observation[-1] = self.distance_from_goal        
+        self.observation[-2] = (self.robot_position[0], self.robot_position[1])
+        self.observation[-1] = (self.waypoint_position[0], self.waypoint_position[1])       
 
         for i, value in enumerate(self.ranges[int(len(self.ranges)//4):int(len(self.ranges)*3//4)]):
             if value < 0.45:
@@ -163,35 +153,21 @@ class SpotEnv(gym.Env):
         arrival_reward = 0
         
         # Calculating the pythagorean distance to the goal position
-        self.distance_from_goal = np.sqrt((self.goal_position[0] - self.robot_position[0])**2 + (self.goal_position[1] - self.robot_position[1])**2)
+        self.distance_from_goal = np.sqrt((self.waypoint_position[0] - self.robot_position[0])**2 + (self.waypoint_position[1] - self.robot_position[1])**2)
         
         if self.distance_from_goal < 1.5:
-            print("arrived")
             arrival_reward = 100
-            waypoints = [wp for wp in self.waypoints if wp != self.goal_position]
-            self.goal_position = random.choice(waypoints)
-            print(self.goal_position)
-            # self.distance_achieved = True
-        elif self.distance_from_goal > 6.5:
-            print("too far")
-            arrival_reward = -5 # change to -30 if resetting the env
+            self.distance_achieved = True
+        elif self.distance_from_goal > 6.0:
+            arrival_reward = -50
             self.too_far = True
         elif self.tipped_over:
-            print("tipped")
-            bad_reward = -30
-        
-        # new to test
-        elif self.collision and self.distance_from_goal > 3.0:  
-            print("collided far")
             bad_reward = -40
-        elif self.collision and self.distance_from_goal < 3.0:
-            print("collided close")
-            bad_reward = -10
-
-
+        elif self.collision:  
+            bad_reward = -40
         elif self.time_over and self.distance_from_goal > 3.0:
             print("time far")
-            bad_reward = -40
+            bad_reward = -30
         elif self.time_over and self.distance_from_goal < 3.0:
             print("time close")
             bad_reward = 10
@@ -202,7 +178,23 @@ class SpotEnv(gym.Env):
 
     def check_done(self):
         # Check if episode is done
-        if self.tipped_over or self.collision or self.time_over or self.distance_achieved: #or self.too_far:
+        if self.tipped_over:
+            print("tipped")
+            return True
+        
+        if self.collision: 
+            print("collided")
+            return True
+        
+        if self.time_over:
+            return True
+        
+        if self.distance_achieved:
+            print("arrived")
+            return True
+        
+        if self.too_far:
+            print("too far")
             return True
 
         return False

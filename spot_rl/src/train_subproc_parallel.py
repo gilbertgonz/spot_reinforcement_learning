@@ -1,6 +1,6 @@
 import gym
 from stable_baselines3 import A2C
-from spot_env import SpotEnv
+from spot_env_waypoints import SpotEnv
 from stable_baselines3.common.callbacks import CheckpointCallback
 from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 from multiprocessing import freeze_support

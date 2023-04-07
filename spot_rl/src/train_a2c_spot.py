@@ -1,6 +1,6 @@
 import gym
 from stable_baselines3 import A2C
-from spot_env import SpotEnv
+from spot_env_one_waypoint import SpotEnv
 from stable_baselines3.common.callbacks import CheckpointCallback
 
 # Save a checkpoint every 1000 steps

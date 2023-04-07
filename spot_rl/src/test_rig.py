@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
-from sensor_msgs.msg import LaserScan
+from sensor_msgs.msg import LaserScan, Imu
 import numpy as np
 from gazebo_msgs.msg import ModelStates
 
@@ -27,11 +27,14 @@ def callback(data):
             # print(i)
             pass
 
+def imu_callback(data):
+    print(data.orientation.x, data.orientation.y)
+
 def state_callback(data):
         # Get the index of Spot's position in the message
         spot_idx = data.name.index('/')
 
-        goal_position = -1.367888, -3.131377
+        goal_position = 3.0113, -2.8049
 
         # Get the x and y position of Spot
         x = data.pose[spot_idx].position.x
@@ -44,10 +47,11 @@ def state_callback(data):
         
         distance_from_goal = np.sqrt((goal_position[0] - robot_position[0])**2 + (goal_position[1] - robot_position[1])**2)
 
-        print(distance_from_goal)
+        # print(distance_from_goal)
 
 if __name__ == '__main__':
     rospy.init_node('laser_scan_subscriber')
     rospy.Subscriber('/scan', LaserScan, callback)
-    robot_state = rospy.Subscriber('/gazebo/model_states', ModelStates, state_callback)
+    rospy.Subscriber('/gazebo/model_states', ModelStates, state_callback)
+    rospy.Subscriber('/imu/data', Imu, imu_callback)
     rospy.spin()

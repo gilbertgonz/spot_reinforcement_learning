@@ -1,6 +1,6 @@
 import gym
 from stable_baselines3 import PPO
-from spot_env import SpotEnv
+from spot_env_one_waypoint import SpotEnv
 
 # Create the environment
 env = SpotEnv()
