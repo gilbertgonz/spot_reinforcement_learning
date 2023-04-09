@@ -1,4 +1,3 @@
-import gym
 from stable_baselines3 import PPO
 from spot_env_one_waypoint import SpotEnv
 

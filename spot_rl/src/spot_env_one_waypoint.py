@@ -36,7 +36,7 @@ class SpotEnv(gym.Env):
         self.ranges = []
         self.waypoints = [(3.0113, -2.8049), (3.524, 2.096), (-1.367888, -3.131377)]
         self.far_waypoints = [(4.402209, -0.810229), (4.43249, 2.479262), (0, 0)]
-        self.waypoint_position = self.far_waypoints[1] # change to [0] after done training
+        self.waypoint_position = self.far_waypoints[0] # change to [0] after done training
         self.distance_from_goal = 0.0
 
         self.too_far = False
@@ -147,7 +147,7 @@ class SpotEnv(gym.Env):
         self.observation[-1] = self.waypoint_position[1]        
 
         for i, value in enumerate(self.ranges[int(len(self.ranges)//4):int(len(self.ranges)*3//4)]):
-            if value < 0.5:
+            if value < 0.45:
                 self.collision = True
         
         return self.observation
@@ -159,24 +159,24 @@ class SpotEnv(gym.Env):
         # Calculating the pythagorean distance to the goal position
         self.distance_from_goal = np.sqrt((self.waypoint_position[0] - self.robot_position[0])**2 + (self.waypoint_position[1] - self.robot_position[1])**2)
         
-        if self.distance_from_goal < 0.75:
-            arrival_reward = 100
+        if self.distance_from_goal < 1.0:
+            arrival_reward = 150
             self.distance_achieved = True
         elif self.distance_from_goal > 6.0:
             arrival_reward = -40
             self.too_far = True
         elif self.tipped_over:
-            bad_reward = -50
+            bad_reward = -70
         elif self.collision:  
-            bad_reward = -50
+            bad_reward = -80
         elif self.time_over and self.distance_from_goal > 3.0:
             print("time far")
             bad_reward = -30
         elif self.time_over and self.distance_from_goal < 3.0:
             print("time close")
-            bad_reward = 10
+            bad_reward = 20
         
-        self.reward = ((2.5 - self.distance_from_goal) * 1.2 + arrival_reward + bad_reward)
+        self.reward = ((3.0 - self.distance_from_goal) * 1.2 + arrival_reward + bad_reward)
 
         return self.reward
 

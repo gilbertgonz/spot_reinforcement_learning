@@ -27,9 +27,9 @@ env = DummyVecEnv([lambda: SpotEnv()])
 pretrained_model = PPO.load("./tb_log/ppo_model_200000_steps.zip", env=env)
 
 ####### CHANGE THIS #######
-policy_kwargs = {
-    "learning_rate": 0.001
-}
+# policy_kwargs = {
+#     "learning_rate": 0.001
+# }
 
 # # Freeze the first two layers of the neural network
 # for i, param in enumerate(pretrained_model.policy.parameters()):

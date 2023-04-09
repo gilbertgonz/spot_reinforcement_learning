@@ -34,7 +34,7 @@ def callback(data):
     observation[-3] = 1.0
     observation[-2] = 1.0
     observation[-1] = 1.0
-    print(len(observation))
+    # print(len(observation))
 
 def imu_callback(data):
     # print(data.orientation.x, data.orientation.y)
@@ -44,7 +44,7 @@ def state_callback(data):
         # Get the index of Spot's position in the message
         spot_idx = data.name.index('/')
 
-        goal_position = 3.0113, -2.8049
+        goal_position = 4.402209, -0.810229
 
         # Get the x and y position of Spot
         x = data.pose[spot_idx].position.x
@@ -57,7 +57,7 @@ def state_callback(data):
         
         distance_from_goal = np.sqrt((goal_position[0] - robot_position[0])**2 + (goal_position[1] - robot_position[1])**2)
 
-        # print(distance_from_goal)
+        print(distance_from_goal)
 
 if __name__ == '__main__':
     rospy.init_node('laser_scan_subscriber')
