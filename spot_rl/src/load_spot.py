@@ -6,7 +6,7 @@ from spot_env_waypoints import SpotEnv
 env = SpotEnv()
 
 # Load the trained model
-model = PPO.load("./tb_log/ppo_new.zip")
+model = PPO.load("./tb_log/ppo_model_90000_steps.zip")
 
 # Evaluate the agent for 10 episodes
 total_reward = 0.0

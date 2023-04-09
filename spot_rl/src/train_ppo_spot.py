@@ -1,10 +1,10 @@
 import gym
 from stable_baselines3 import PPO
-from spot_env_waypoints import SpotEnv
+from spot_env_one_waypoint import SpotEnv
 from stable_baselines3.common.callbacks import CheckpointCallback
 
 # Save a checkpoint every 1000 steps
-checkpoint_callback = CheckpointCallback(save_freq=30000, save_path="./tb_log/", name_prefix="ppo_model")
+checkpoint_callback = CheckpointCallback(save_freq=20000, save_path="./tb_log/", name_prefix="ppo_model")
 
 # Create the environment
 env = SpotEnv()

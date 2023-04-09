@@ -17,8 +17,8 @@ class SpotEnv(gym.Env):
         rospy.init_node('my_env', anonymous=True)
 
         # Define observation space and action space
-        self.observation_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(520,)) # dtype=np.float32
-        self.action_space = gym.spaces.Discrete(3)
+        self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(520,)) # dtype=np.float32
+        self.action_space = spaces.Discrete(3)
 
         # Create ROS publishers and subscribers
         self.vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
