@@ -34,8 +34,8 @@ class SpotEnv(gym.Env):
         self.reward = 0.0
         self.action = None
         self.ranges = []
-        self.waypoints = [(3.0113, -2.8049), (3.524, 2.096), (-1.367888, -3.131377)]
-        self.goal_position = 3.524, 2.096
+        self.waypoints = [(3.0113, -2.8049), (3.524, 2.096)]
+        self.waypoint_position = 3.524, 2.096
         self.distance_from_goal = 0.0
 
         self.too_far = False
@@ -88,7 +88,8 @@ class SpotEnv(gym.Env):
         self.reward = 0.0
 
         self.distance_from_goal = 0.0
-        self.goal_position = 3.524, 2.096
+        self.waypoint_position = random.choice([wp for wp in self.waypoints if wp != self.waypoint_position])
+        print("goal", str(self.waypoint_position))
         self.ranges = []
         self.action = None
         self.done = False
@@ -148,9 +149,11 @@ class SpotEnv(gym.Env):
 
         # Adding data to observation vector
         self.observation[0:len(self.ranges[int(len(self.ranges)/4):int(len(self.ranges)*3/4)])] = self.ranges[int(len(self.ranges)/4):int(len(self.ranges)*3/4)]
-        self.observation[-3] = imu_data.orientation.x
-        self.observation[-2] = imu_data.orientation.y
-        self.observation[-1] = self.distance_from_goal        
+        self.observation[-5] = imu_data.orientation.x
+        self.observation[-4] = self.robot_position[0]
+        self.observation[-3] = self.robot_position[1]
+        self.observation[-2] = self.waypoint_position[0]
+        self.observation[-1] = self.waypoint_position[1]  
 
         for i, value in enumerate(self.ranges[int(len(self.ranges)//4):int(len(self.ranges)*3//4)]):
             if value < 0.45:
@@ -163,18 +166,11 @@ class SpotEnv(gym.Env):
         arrival_reward = 0
         
         # Calculating the pythagorean distance to the goal position
-        self.distance_from_goal = np.sqrt((self.goal_position[0] - self.robot_position[0])**2 + (self.goal_position[1] - self.robot_position[1])**2)
+        self.distance_from_goal = np.sqrt((self.waypoint_position[0] - self.robot_position[0])**2 + (self.waypoint_position[1] - self.robot_position[1])**2)
         
         if self.distance_from_goal < 1.5:
-            print("arrived")
-            arrival_reward = 60
-            # waypoints = [wp for wp in self.waypoints if wp != self.goal_position]
-            if self.goal_position == (3.0113, -2.8049):
-                arrival_reward = 100
-                self.distance_achieved = True
-            else:
-                self.goal_position = 3.0113, -2.8049 # random.choice(waypoints)
-                print("new goal pos:", str(self.goal_position))
+            arrival_reward = 100
+            self.distance_achieved = True
         elif self.distance_from_goal > 6.0:
             arrival_reward = -50
             self.too_far = True

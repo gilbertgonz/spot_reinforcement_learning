@@ -1,12 +1,12 @@
 import gym
 from stable_baselines3 import PPO
-from spot_env_one_waypoint import SpotEnv
+from spot_env_waypoints import SpotEnv
 
 # Create the environment
 env = SpotEnv()
 
 # Load the trained model
-model = PPO.load("./tb_log/ppo_upgraded_20000_steps.zip")
+model = PPO.load("./tb_log/ppo_new.zip")
 
 # Evaluate the agent for 10 episodes
 total_reward = 0.0

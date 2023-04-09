@@ -27,8 +27,18 @@ def callback(data):
             # print(i)
             pass
 
+    observation = []
+    observation[0:len(ranges[int(len(ranges)/4):int(len(ranges)*3/4)])] = ranges[int(len(ranges)/4):int(len(ranges)*3/4)]
+    observation[-5] = 1.0
+    observation[-4] = 1.0
+    observation[-3] = 1.0
+    observation[-2] = 1.0
+    observation[-1] = 1.0
+    print(len(observation))
+
 def imu_callback(data):
-    print(data.orientation.x, data.orientation.y)
+    # print(data.orientation.x, data.orientation.y)
+    pass
 
 def state_callback(data):
         # Get the index of Spot's position in the message

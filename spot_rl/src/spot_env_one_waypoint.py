@@ -34,7 +34,8 @@ class SpotEnv(gym.Env):
         self.reward = 0.0
         self.action = None
         self.ranges = []
-        self.waypoint_position = 3.0113, -2.8049
+        self.waypoints = [(3.0113, -2.8049), (3.524, 2.096), (-1.367888, -3.131377)]
+        self.waypoint_position = self.waypoints[1]
         self.distance_from_goal = 0.0
 
         self.too_far = False
@@ -161,12 +162,12 @@ class SpotEnv(gym.Env):
             arrival_reward = 100
             self.distance_achieved = True
         elif self.distance_from_goal > 6.0:
-            arrival_reward = -50
+            arrival_reward = -40
             self.too_far = True
         elif self.tipped_over:
-            bad_reward = -40
+            bad_reward = -50
         elif self.collision:  
-            bad_reward = -60
+            bad_reward = -50
         elif self.time_over and self.distance_from_goal > 3.0:
             print("time far")
             bad_reward = -30
@@ -174,7 +175,7 @@ class SpotEnv(gym.Env):
             print("time close")
             bad_reward = 10
         
-        self.reward = ((3.0 - self.distance_from_goal) * 1.2 + arrival_reward + bad_reward)
+        self.reward = ((2.5 - self.distance_from_goal) * 1.2 + arrival_reward + bad_reward)
 
         return self.reward
 
