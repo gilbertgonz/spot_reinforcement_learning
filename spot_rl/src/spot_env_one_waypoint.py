@@ -28,14 +28,15 @@ class SpotEnv(gym.Env):
 
         # Initialize variables
         self.observation = np.zeros((520,))
-        self.max_episode_length = 30.0  # maximum episode length in seconds
+        self.max_episode_length = 35.0  # maximum episode length in seconds
         self.timer = None  # timer object
         self.total_reward = 0.0
         self.reward = 0.0
         self.action = None
         self.ranges = []
         self.waypoints = [(3.0113, -2.8049), (3.524, 2.096), (-1.367888, -3.131377)]
-        self.waypoint_position = self.waypoints[1]
+        self.far_waypoints = [(4.402209, -0.810229), (4.43249, 2.479262), (0, 0)]
+        self.waypoint_position = self.far_waypoints[1] # change to [0] after done training
         self.distance_from_goal = 0.0
 
         self.too_far = False
@@ -146,7 +147,7 @@ class SpotEnv(gym.Env):
         self.observation[-1] = self.waypoint_position[1]        
 
         for i, value in enumerate(self.ranges[int(len(self.ranges)//4):int(len(self.ranges)*3//4)]):
-            if value < 0.45:
+            if value < 0.5:
                 self.collision = True
         
         return self.observation
@@ -158,7 +159,7 @@ class SpotEnv(gym.Env):
         # Calculating the pythagorean distance to the goal position
         self.distance_from_goal = np.sqrt((self.waypoint_position[0] - self.robot_position[0])**2 + (self.waypoint_position[1] - self.robot_position[1])**2)
         
-        if self.distance_from_goal < 1.5:
+        if self.distance_from_goal < 0.75:
             arrival_reward = 100
             self.distance_achieved = True
         elif self.distance_from_goal > 6.0:
