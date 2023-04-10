@@ -10,10 +10,10 @@ checkpoint_callback = CheckpointCallback(save_freq=20000, save_path="./tb_log/",
 env = SpotEnv()
 
 # Instantiate the agent
-model = PPO('MlpPolicy', env, verbose=1, tensorboard_log="./tb_log/", n_steps = 2048) # Monitor with: tensorboard --logdir ./tb_log/
+model = PPO('MlpPolicy', env, verbose=1, tensorboard_log="./tb_log/", exploration_fraction=0.2, n_steps = 2048) # Monitor with: tensorboard --logdir ./tb_log/
 
 # Train the agent for X amount of steps
-model.learn(total_timesteps=1000000, callback=checkpoint_callback)
+model.learn(total_timesteps=200000, callback=checkpoint_callback)
 
 print("######################## Done Training ########################")
 

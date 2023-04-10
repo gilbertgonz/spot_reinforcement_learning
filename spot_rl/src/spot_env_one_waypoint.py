@@ -8,7 +8,6 @@ from gazebo_msgs.msg import ModelStates
 from std_srvs.srv import Empty
 import numpy as np
 import time
-import random
 
 ## TODO: try training with NEAT algo once DQN and PPO is properly trained
 
@@ -28,14 +27,14 @@ class SpotEnv(gym.Env):
 
         # Initialize variables
         self.observation = np.zeros((520,))
-        self.max_episode_length = 35.0  # maximum episode length in seconds
+        self.max_episode_length = 25.0  # maximum episode length in seconds
         self.timer = None  # timer object
         self.total_reward = 0.0
         self.reward = 0.0
         self.action = None
         self.ranges = []
-        self.waypoints = [(3.0113, -2.8049), (3.524, 2.096), (-1.367888, -3.131377)]
-        self.far_waypoints = [(4.402209, -0.810229), (4.43249, 2.479262), (0, 0)]
+        self.easy_waypoints = [(3.0113, -2.8049), (3.524, 2.096), (3.246421, -1.871811)] # right, left, middleish-right
+        self.far_waypoints = [(4.402209, -0.810229), (4.43249, 2.479262), (0, 0)] # middle-difficult, left
         self.waypoint_position = self.far_waypoints[0] # change to [0] after done training
         self.distance_from_goal = 0.0
 
@@ -147,7 +146,7 @@ class SpotEnv(gym.Env):
         self.observation[-1] = self.waypoint_position[1]        
 
         for i, value in enumerate(self.ranges[int(len(self.ranges)//4):int(len(self.ranges)*3//4)]):
-            if value < 0.45:
+            if value < 0.5:
                 self.collision = True
         
         return self.observation
@@ -159,7 +158,7 @@ class SpotEnv(gym.Env):
         # Calculating the pythagorean distance to the goal position
         self.distance_from_goal = np.sqrt((self.waypoint_position[0] - self.robot_position[0])**2 + (self.waypoint_position[1] - self.robot_position[1])**2)
         
-        if self.distance_from_goal < 1.0:
+        if self.distance_from_goal < 0.7:
             arrival_reward = 150
             self.distance_achieved = True
         elif self.distance_from_goal > 6.0:
@@ -176,7 +175,7 @@ class SpotEnv(gym.Env):
             print("time close")
             bad_reward = 20
         
-        self.reward = ((3.0 - self.distance_from_goal) * 1.2 + arrival_reward + bad_reward)
+        self.reward = ((2.3 - self.distance_from_goal) * 1.2 + arrival_reward + bad_reward)
 
         return self.reward
 
