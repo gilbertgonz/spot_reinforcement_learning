@@ -35,7 +35,7 @@ class SpotEnv(gym.Env):
         self.ranges = []
         self.easy_waypoints = [(3.0113, -2.8049), (3.524, 2.096), (3.246421, -1.871811)] # right, left, middleish-right
         self.far_waypoints = [(4.402209, -0.810229), (4.43249, 2.479262), (0, 0)] # middle-difficult, left
-        self.waypoint_position = self.far_waypoints[0] # change to [0] after done training
+        self.waypoint_position = self.easy_waypoints[1] # change to [0] after done training
         self.distance_from_goal = 0.0
 
         self.too_far = False
@@ -105,13 +105,15 @@ class SpotEnv(gym.Env):
         if action == 0:  # Forward
             vel_cmd.linear.x = 0.4
             vel_cmd.angular.z = 0.0
-            self.reward += 0.5
+            self.reward += 1.0
         elif action == 1:  # Right
             vel_cmd.linear.x = 0.15
             vel_cmd.angular.z = -0.4
+            self.reward -= 1.0
         elif action == 2:  # Left
             vel_cmd.linear.x = 0.15
             vel_cmd.angular.z = 0.4
+            self.reward -= 1.0
 
         # Publish velocity command
         self.vel_pub.publish(vel_cmd)
@@ -158,19 +160,19 @@ class SpotEnv(gym.Env):
         # Calculating the pythagorean distance to the goal position
         self.distance_from_goal = np.sqrt((self.waypoint_position[0] - self.robot_position[0])**2 + (self.waypoint_position[1] - self.robot_position[1])**2)
         
-        if self.distance_from_goal < 0.7:
-            arrival_reward = 150
+        if self.distance_from_goal < 1.0:
+            arrival_reward = 200
             self.distance_achieved = True
         elif self.distance_from_goal > 6.0:
             arrival_reward = -40
             self.too_far = True
         elif self.tipped_over:
-            bad_reward = -70
+            bad_reward = -60
         elif self.collision:  
-            bad_reward = -80
+            bad_reward = -70
         elif self.time_over and self.distance_from_goal > 3.0:
             print("time far")
-            bad_reward = -30
+            bad_reward = -70
         elif self.time_over and self.distance_from_goal < 3.0:
             print("time close")
             bad_reward = 20

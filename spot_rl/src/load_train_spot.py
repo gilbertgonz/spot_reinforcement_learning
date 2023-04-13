@@ -24,20 +24,15 @@ eval_callback = EvalCallback(
 env = DummyVecEnv([lambda: SpotEnv()])
 
 # Load saved model
-pretrained_model = PPO.load("./tb_log/ppo_model_200000_steps.zip", env=env)
+pretrained_model = PPO.load("./tb_log/ppo_model_90000_steps.zip", env=env)
 
-####### CHANGE THIS #######
-# policy_kwargs = {
-#     "learning_rate": 0.001
-# }
-
-# # Freeze the first two layers of the neural network
-# for i, param in enumerate(pretrained_model.policy.parameters()):
-#     if i < 4:
-#         param.requires_grad = False
+# Freeze the first two layers of the neural network
+for i, param in enumerate(pretrained_model.policy.parameters()):
+    if i < 4:
+        param.requires_grad = False
 
 # Continue training for additional 10000 timesteps
-pretrained_model.learn(total_timesteps=500000, callback=[checkpoint_callback, eval_callback])
+pretrained_model.learn(total_timesteps=250000, callback=[checkpoint_callback, eval_callback])
 
 print("######################## Done Training ########################")
 

@@ -44,7 +44,7 @@ def state_callback(data):
         # Get the index of Spot's position in the message
         spot_idx = data.name.index('/')
 
-        goal_position = 4.402209, -0.810229
+        goal_position = 3.524, 2.096
 
         # Get the x and y position of Spot
         x = data.pose[spot_idx].position.x
