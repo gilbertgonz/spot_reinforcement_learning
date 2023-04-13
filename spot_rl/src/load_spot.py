@@ -5,7 +5,10 @@ from spot_env_one_waypoint import SpotEnv
 env = SpotEnv()
 
 # Load the trained model
-model = PPO.load("./tb_log/ppo_model_90000_steps.zip")
+model = PPO.load("./tb_log/ppo_second_80000_steps.zip")
+
+num_layers = len(list(model.policy.parameters()))
+print("Number of layers in the model:", num_layers)
 
 # Evaluate the agent for 10 episodes
 total_reward = 0.0

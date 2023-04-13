@@ -1,4 +1,4 @@
-from spot_env_one_waypoint import SpotEnv
+from spot_env_waypoints import SpotEnv
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.callbacks import CheckpointCallback, EvalCallback
@@ -7,7 +7,7 @@ from stable_baselines3.common.callbacks import CheckpointCallback, EvalCallback
 checkpoint_callback = CheckpointCallback(
     save_freq=20000, 
     save_path="./tb_log/", 
-    name_prefix="ppo_second")
+    name_prefix="ppo_third")
 
 # Log evaluation metrics to Tensorboard
 eval_callback = EvalCallback(
@@ -24,15 +24,15 @@ eval_callback = EvalCallback(
 env = DummyVecEnv([lambda: SpotEnv()])
 
 # Load saved model
-pretrained_model = PPO.load("./tb_log/ppo_model_90000_steps.zip", env=env)
+pretrained_model = PPO.load("./tb_log/ppo_second_80000_steps.zip", env=env)
 
 # Freeze the first two layers of the neural network
 for i, param in enumerate(pretrained_model.policy.parameters()):
-    if i < 4:
+    if i < 6:
         param.requires_grad = False
 
 # Continue training for additional 10000 timesteps
-pretrained_model.learn(total_timesteps=250000, callback=[checkpoint_callback, eval_callback])
+pretrained_model.learn(total_timesteps=200000, callback=[checkpoint_callback, eval_callback])
 
 print("######################## Done Training ########################")
 

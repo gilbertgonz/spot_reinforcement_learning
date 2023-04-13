@@ -168,7 +168,7 @@ class SpotEnv(gym.Env):
         # Calculating the pythagorean distance to the goal position
         self.distance_from_goal = np.sqrt((self.waypoint_position[0] - self.robot_position[0])**2 + (self.waypoint_position[1] - self.robot_position[1])**2)
         
-        if self.distance_from_goal < 1.5:
+        if self.distance_from_goal < 1.0:
             arrival_reward = 100
             self.distance_achieved = True
         elif self.distance_from_goal > 6.0:
@@ -203,7 +203,7 @@ class SpotEnv(gym.Env):
             return True
         
         if self.distance_achieved:
-            print("new arrived")
+            print("arrived")
             return True
         
         if self.too_far:
