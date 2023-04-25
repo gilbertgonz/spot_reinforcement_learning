@@ -4,28 +4,15 @@ This project aims to implement a Reinforcement Learning (RL) algorithm to enable
 
 # Requirements
 
-**The following are the hardware and software requirements needed to reproduce the results of this project:**
-
 - Boston Dynamics' Spot robot (not needed but can be helpful for testing on actual hardware)
 - [Spot SDK](https://github.com/boston-dynamics/spot-sdk)
 - [ROS Melodic](http://wiki.ros.org/melodic/Installation)
 - [Stable Baselines 3](https://stable-baselines3.readthedocs.io/en/master/guide/install.html)
 - [Open AI Gym](https://www.gymlibrary.dev/)
 
-# Installation
-
-Clone the Spot SDK repository and follow the instructions to set up the environment.
-
-Install ROS Melodic using the instructions on the ROS Wiki.
-
-Install Open AI Gym and Stable Baselines 3 using pip:
-
-    pip install stable-baselines3
-    pip install gym
-
 # Usage
 
-Connect to the robot using the Spot SDK and launch the robot's ROS interface ('spot_ros').
+Connect to the robot using the Spot SDK and launch the robot's ROS interface ('spot_ros'), if possible.
 
 Launch the Gazebo simulation (assuming you have your workspace properly sourced):
 
