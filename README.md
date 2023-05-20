@@ -33,11 +33,16 @@ I have created an open source docker image containing all the required files/pac
     
 Start the Docker container by running:
 
-    docker run -it --rm gilbertgonzalezz/spot_rl:1.0  # this command will remove the container when it is exited
+    # Enable access to xhost from container
+    xhost +
 
-Ensure docker has access the your host machine's display, if you're having issues with this please refer to this article:
-
-    https://medium.com/@nihon_rafy/building-a-dockerized-gui-by-sharing-the-host-screen-with-docker-container-b660835fb722
+    # Run docker and open bash shell
+    docker run -it --privileged \
+    --env=LOCAL_USER_ID="$(id -u)" \
+    -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
+    -e DISPLAY=:0 \
+    --network host \
+    --name=spot_rl_container gilbertgonzalezz/spot_rl:1.0 bash
 
 # Acknowledgements
 
