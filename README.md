@@ -14,8 +14,9 @@ This project aims to implement a Reinforcement Learning (RL) algorithm to enable
 
 Connect to the robot using the Spot SDK and launch the robot's ROS interface ('spot_ros'), if possible.
 
-Launch the Gazebo simulation (assuming you have your workspace properly sourced):
+Launch the Gazebo simulation:
 
+    source opt/ros/noetic/setup.bash
     roslaunch spot_config gazebo.launch
 
 Run the training script to train the RL agent using the PPO, A2C, or DQN algorithms:
