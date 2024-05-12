@@ -2,6 +2,10 @@
 
 This project aims to implement a Reinforcement Learning (RL) algorithm to enable the Boston Dynamics' Spot robot to navigate in low-gravity environments. The objective is to develop an RL agent that can learn to control the robot's movement and keep it stable in these conditions.
 
+Watch demo here:
+[SPOT RL Demo 1](https://www.youtube.com/watch?v=6YA5F_30Poo)
+[SPOT RL Demo 2](https://www.youtube.com/shorts/e583fdLVQTk)
+
 # Requirements
 
 - Boston Dynamics' Spot robot (not needed but can be helpful for testing on actual hardware)
